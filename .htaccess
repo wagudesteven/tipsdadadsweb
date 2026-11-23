@@ -1,0 +1,8 @@
+# Serve the video correctly and cache files for fast repeat visits
+AddType video/mp4 .mp4
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType video/mp4 "access plus 7 days"
+  ExpiresByType image/jpeg "access plus 7 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>

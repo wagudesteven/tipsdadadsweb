@@ -2,152 +2,155 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Tipsdad – Today's football tips are live ⚽</title>
   <meta name="description" content="Free daily football tips, VIP picks and every result posted. Join Tipsdad on Telegram or get the app on Google Play.">
   <meta name="theme-color" content="#0B0E14">
 
-  <!-- Link previews (WhatsApp, Facebook, Telegram) -->
+  <!-- Link previews (WhatsApp, Facebook, Telegram): change to full links with your domain -->
   <meta property="og:title" content="Tipsdad – Today's tips are live ⚽">
   <meta property="og:description" content="Free daily tips, VIP picks and every result posted. Join now.">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="video.other">
+  <meta property="og:image" content="tipsdad-poster.jpg">
+  <meta property="og:video" content="tipsdad-ad.mp4">
+  <meta property="og:video:type" content="video/mp4">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
+  <link rel="preload" href="tipsdad-ad.mp4" as="video" type="video/mp4">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      background: #0B0E14;
+      color: #F5F7FA;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100svh;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: env(safe-area-inset-top) 16px max(10px, env(safe-area-inset-bottom));
+      overflow-x: hidden;
+    }
+
+    /* Video blends into the page: same background, soft faded edges */
+    .video {
+      position: relative;
+      width: min(100vw, 560px, calc((100svh - 150px) * 4 / 5));
+      aspect-ratio: 4 / 5;
+    }
+    .video video {
+      width: 100%; height: 100%; display: block; object-fit: contain; background: #0B0E14; cursor: pointer;
+      -webkit-mask-image: radial-gradient(ellipse 75% 72% at 50% 50%, #000 72%, transparent 100%);
+              mask-image: radial-gradient(ellipse 75% 72% at 50% 50%, #000 72%, transparent 100%);
+    }
+    .sound {
+      position: absolute; right: 12px; bottom: 12px;
+      width: 42px; height: 42px; border-radius: 50%;
+      display: grid; place-items: center;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(11, 14, 20, .7); color: #fff; cursor: pointer;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      animation: nudge 1.6s ease-in-out infinite;
+    }
+    .sound.on { animation: none; opacity: .7; }
+    .sound svg { width: 20px; height: 20px; }
+    @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+    .play { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; background: transparent; border: 0; cursor: pointer; }
+    .play.show { display: flex; }
+    .play span { width: 78px; height: 78px; border-radius: 50%; background: #F7A825; display: grid; place-items: center; box-shadow: 0 10px 40px rgba(247, 168, 37, .45); }
+
+    /* Buttons with pointing fingers */
+    .links {
+      width: 100%; max-width: 460px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+      margin-top: 6px;
+    }
+    .link { display: flex; flex-direction: column; align-items: center; }
+    .btn {
+      position: relative; overflow: hidden;
+      width: 100%; min-height: 58px; padding: 0 12px;
+      display: flex; align-items: center; justify-content: center; gap: 9px;
+      border-radius: 16px; text-decoration: none;
+      font-weight: 800; font-size: 16px; white-space: nowrap;
+      transition: transform .15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn--tg { background: #F7A825; color: #1A1200; box-shadow: 0 10px 30px rgba(247, 168, 37, .35); }
+    .btn--app { background: #22C55E; color: #06210F; box-shadow: 0 10px 30px rgba(34, 197, 94, .3); }
+    .btn::after {
+      content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+      background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .5), transparent);
+      transform: skewX(-20deg); animation: shine 3s ease-in-out infinite;
+    }
+    .btn--app::after { animation-delay: 1.5s; }
+    @keyframes shine { 0%, 55% { left: -60%; } 100% { left: 130%; } }
+
+    .finger {
+      font-size: 38px; line-height: 1; margin-top: 4px;
+      animation: point 1s ease-in-out infinite;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .5));
+      user-select: none; pointer-events: none;
+    }
+    .link:nth-child(2) .finger { animation-delay: .5s; }
+    @keyframes point { 0%, 100% { transform: translateY(8px); } 50% { transform: translateY(-4px); } }
+
+    @media (max-width: 360px) { .btn { font-size: 14px; gap: 6px; } .finger { font-size: 32px; } }
+    @media (prefers-reduced-motion: reduce) { .finger, .btn::after, .sound { animation: none; } }
+  </style>
 </head>
 <body>
-  <div class="page">
 
-    <!-- Top strip: live date & time -->
-    <div class="topbar">
-      <span class="topbar-item">📅 <span id="today">Today</span></span>
-      <span class="topbar-sep" aria-hidden="true">·</span>
-      <span class="topbar-item">⏰ <span id="clock-now">--:--:--</span></span>
-      <span class="topbar-sep topbar-hide" aria-hidden="true">·</span>
-      <span class="topbar-item topbar-hide" id="day-note">⚽ Matchday</span>
-    </div>
-
-    <!-- Header -->
-    <header class="header">
-      <a class="logo" href="#">Tips<span>dad</span></a>
-      <button class="live" id="live" type="button" aria-label="Live: restart the 30 minute timer">
-        <span class="live-dot" aria-hidden="true"></span>
-        LIVE
-      </button>
-    </header>
-
-    <main class="main">
-
-      <!-- Hero -->
-      <section class="hero">
-        <p class="greeting rise" id="greeting">⚽ Today's football tips are out</p>
-
-        <h1 class="headline rise">
-          <span id="headline-top">Don't miss</span><br>
-          <span class="headline-accent" id="headline-bottom">today's tips. 🔥</span>
-        </h1>
-
-        <p class="lede rise-2">
-          Free tips every day, VIP picks for every market, and every result posted
-          after the final whistle. Get them on Telegram or in the app.
-        </p>
-      </section>
-
-      <!-- Countdown card -->
-      <section class="card countdown rise-2" aria-label="Countdown">
-        <div class="card-head">
-          <span class="badge">🚨 Kickoff is close</span>
-          <span class="card-note" id="note-running">Join in the next 30 minutes</span>
-          <span class="card-note card-note--up blink" id="note-up" hidden>⏰ Time's up. Join before the next kickoff</span>
-        </div>
-
-        <div class="clock" id="clock">
-          <div class="clock-unit">
-            <span class="clock-box" id="mm">30</span>
-            <span class="clock-label">min</span>
-          </div>
-          <span class="clock-sep blink" aria-hidden="true">:</span>
-          <div class="clock-unit">
-            <span class="clock-box" id="ss">00</span>
-            <span class="clock-label">sec</span>
-          </div>
-        </div>
-
-        <div class="bar" aria-hidden="true"><div class="bar-fill" id="bar"></div></div>
-
-        <p class="hurry blink">⚡ Hurry! Today's tips are going out now</p>
-      </section>
-
-      <!-- Call to action -->
-      <section class="actions rise-3">
-        <div class="action">
-          <a class="btn btn--gold" href="https://t.me/tipsdad" rel="noopener">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5L2.8 10.7c-.9.4-.9 1.6 0 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.7 3.4c.7.5 1.7.1 1.9-.7l3-15.3c.2-1-.8-1.8-1.8-1.5z"/><path d="M7.4 14.1l10.1-6.6"/></svg>
-            <span>Join Telegram now 🔥</span>
-          </a>
-          <span class="btn-sub">Free daily games · instant updates</span>
-          <span class="hand hand--1" aria-hidden="true">👆</span>
-        </div>
-
-        <div class="action">
-          <a class="btn btn--white" href="https://play.google.com/store/apps/details?id=com.smart.tipsdad" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5v17l14-8.5z"/></svg>
-            <span>Get the app 📲</span>
-          </a>
-          <span class="btn-sub">Free on Google Play · live results</span>
-          <span class="hand hand--2" aria-hidden="true">👆</span>
-        </div>
-      </section>
-
-      <!-- What you get -->
-      <section class="perks rise-3" aria-label="What you get">
-        <div class="perk">
-          <span class="perk-icon">⚽</span>
-          <div>
-            <strong>Free tips daily</strong>
-            <span>Posted before kickoff, every day</span>
-          </div>
-        </div>
-        <div class="perk">
-          <span class="perk-icon">👑</span>
-          <div>
-            <strong>VIP picks</strong>
-            <span>Over/Under, GG, draws, correct score</span>
-          </div>
-        </div>
-        <div class="perk">
-          <span class="perk-icon">✅</span>
-          <div>
-            <strong>Every result posted</strong>
-            <span>Won or lost, check our record</span>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- Scrolling ticker -->
-    <div class="ticker" aria-hidden="true">
-      <div class="ticker-track">
-        <span>🔥 DON'T MISS KICKOFF</span><span>⚽ OVER 2.5</span><span>🎯 BOTH TEAMS TO SCORE</span><span>🤝 DRAWS</span><span>📊 CORRECT SCORE</span><span>📲 JOIN T.ME/TIPSDAD</span>
-        <span>🔥 DON'T MISS KICKOFF</span><span>⚽ OVER 2.5</span><span>🎯 BOTH TEAMS TO SCORE</span><span>🤝 DRAWS</span><span>📊 CORRECT SCORE</span><span>📲 JOIN T.ME/TIPSDAD</span>
-      </div>
-    </div>
-
-    <footer class="footer">
-      <span>© <span id="year">2026</span> Tipsdad</span>
-      <span>Make football an investment not just a sport. </span>
-    </footer>
+  <div class="video">
+    <video id="ad" src="tipsdad-ad.mp4" poster="tipsdad-poster.jpg"
+           autoplay muted loop playsinline webkit-playsinline preload="auto"></video>
+    <button class="sound" id="sound" type="button" aria-label="Turn sound on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path id="snd-x" d="M23 9l-6 6M17 9l6 6"/><path id="snd-on" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" style="display:none"/></svg>
+    </button>
+    <button class="play" id="play" type="button" aria-label="Play video">
+      <span><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z" fill="#1A1200"/></svg></span>
+    </button>
   </div>
 
-  <!-- Sticky bar on phones -->
-  <div class="sticky" id="sticky">
-    <a class="sticky-btn sticky-btn--gold" href="https://t.me/tipsdad" rel="noopener">🔥 Telegram</a>
-    <a class="sticky-btn" href="https://play.google.com/store/apps/details?id=com.smart.tipsdad" rel="noopener">📲 Get the app</a>
-  </div>
+  <nav class="links">
+    <div class="link">
+      <a class="btn btn--tg" href="https://t.me/tipsdad" rel="noopener">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 3.5L2.8 10.7c-.9.4-.9 1.6 0 1.9l4.6 1.5 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.5 4.7 3.4c.7.5 1.7.1 1.9-.7l3-15.3c.2-1-.8-1.8-1.8-1.5z"/><path d="M7.4 14.1l10.1-6.6"/></svg>
+        Join Telegram
+      </a>
+      <span class="finger" aria-hidden="true">👆</span>
+    </div>
+    <div class="link">
+      <a class="btn btn--app" href="https://play.google.com/store/apps/details?id=com.smart.tipsdad" rel="noopener">
+        <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3.5v17l14-8.5z" fill="currentColor"/></svg>
+        Download App
+      </a>
+      <span class="finger" aria-hidden="true">👆</span>
+    </div>
+  </nav>
 
-  <script src="script.js"></script>
+  <script>
+    (function () {
+      var v = document.getElementById('ad'), sound = document.getElementById('sound'),
+          x = document.getElementById('snd-x'), on = document.getElementById('snd-on'),
+          play = document.getElementById('play');
+      function setSound(s) {
+        v.muted = !s;
+        x.style.display = s ? 'none' : ''; on.style.display = s ? '' : 'none';
+        sound.classList.toggle('on', s);
+        sound.setAttribute('aria-label', s ? 'Turn sound off' : 'Turn sound on');
+      }
+      var p = v.play();
+      if (p && p.catch) p.catch(function () { play.classList.add('show'); });
+      play.addEventListener('click', function () { setSound(true); v.play(); play.classList.remove('show'); });
+      sound.addEventListener('click', function (e) { e.stopPropagation(); setSound(v.muted); if (v.paused) v.play(); });
+      v.addEventListener('click', function () {
+        if (v.muted) { setSound(true); if (v.paused) v.play(); return; }
+        if (v.paused) v.play(); else v.pause();
+      });
+    })();
+  </script>
 </body>
 </html>
